@@ -103,6 +103,48 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Captcha 텍스트와 입력 필드 -->
+        <TextView
+            android:id="@+id/captchaTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Solve: "
+            android:textSize="18sp"
+            android:gravity="center"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/captchaInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Captcha"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/captchaEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="16dp"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 캡차 확인 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Buttoncaptcha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="확인"
+            app:backgroundTint="@color/colorPrimary"
+            app:cornerRadius="16dp"
+            android:paddingVertical="16dp"
+            android:layout_marginTop="8dp" />
+
         <!-- 로그인 버튼 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginButton"
@@ -112,7 +154,8 @@
             app:backgroundTint="@color/colorPrimary"
             app:cornerRadius="16dp"
             android:paddingVertical="16dp"
-            android:layout_marginTop="9dp" />
+            android:layout_marginTop="9dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

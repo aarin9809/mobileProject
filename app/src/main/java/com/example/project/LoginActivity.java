@@ -24,9 +24,12 @@ import com.example.project.databinding.ActivityLoginBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.Random;
+
 public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
     private FirebaseFirestore db;
+    private int captchaResult;
 
     @Override
     protected void onStart() {
@@ -63,6 +66,19 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Initialize Captcha
+        initializeCaptcha();
+
+        // Set click listener for captcha button as confirm
+        binding.Buttoncaptcha.setOnClickListener(v -> {
+            if (validateCaptcha()) {
+                binding.loginButton.setVisibility(View.VISIBLE);
+            } else {
+                binding.loginButton.setVisibility(View.GONE);
+            }
+        });
+
+        // Set click listener for login button
         binding.loginButton.setOnClickListener(v -> {
             String userId = binding.studentIdEditText.getText().toString().trim();
             String password = binding.passwordEditText.getText().toString().trim();
@@ -71,6 +87,45 @@ public class LoginActivity extends AppCompatActivity {
                 performLogin(userId, password);
             }
         });
+    }
+
+    private void initializeCaptcha() {
+        // Initial captcha generation
+        generateCaptcha();
+    }
+
+    private void generateCaptcha() {
+        Random random = new Random();
+        int num1 = random.nextInt(10); // generate a number between 0 and 9
+        int num2 = random.nextInt(10); // generate a number between 0 and 9
+        captchaResult = num1 + num2;
+
+        binding.captchaTextView.setText("Solve: " + num1 + " + " + num2);
+        binding.loginButton.setVisibility(View.GONE); // Hide login button until captcha is solved
+    }
+
+    private boolean validateCaptcha() {
+        String captchaInput = binding.captchaEditText.getText().toString().trim();
+        if (captchaInput.isEmpty()) {
+            binding.captchaEditText.setError("Please solve the captcha");
+            return false;
+        }
+
+        int captchaAnswer;
+        try {
+            captchaAnswer = Integer.parseInt(captchaInput);
+        } catch (NumberFormatException e) {
+            binding.captchaEditText.setError("Invalid captcha answer");
+            return false;
+        }
+
+        if (captchaAnswer == captchaResult) {
+            binding.captchaEditText.setError(null);
+            return true;
+        } else {
+            binding.captchaEditText.setError("Incorrect captcha answer");
+            return false;
+        }
     }
 
     private boolean validateInputs(String userId, String password) {
@@ -150,5 +205,4 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
 }
