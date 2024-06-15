@@ -18,6 +18,7 @@ public class SendMessageActivity extends AppCompatActivity {
     private String professorId;
     private String professorName;
     private String userId;
+    private String userName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,11 +28,12 @@ public class SendMessageActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // SharedPreferences에서 사용자 ID 가져오기
+        // SharedPreferences에서 사용자 ID와 이름 가져오기
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("user_id", null);
+        userName = sharedPreferences.getString("user_name", null);
 
-        if (userId == null) {
+        if (userId == null || userName == null) {
             // 사용자가 로그인되지 않았으므로 LoginActivity로 이동
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -54,7 +56,7 @@ public class SendMessageActivity extends AppCompatActivity {
         binding.sendButton.setOnClickListener(v -> {
             String messageContent = binding.messageContentEditText.getText().toString().trim();
             if (validateInputs(professorId, messageContent)) {
-                sendMessage(professorId, messageContent, userId);
+                sendMessage(professorId, messageContent, userId, userName);
             }
         });
     }
@@ -73,8 +75,8 @@ public class SendMessageActivity extends AppCompatActivity {
         return true;
     }
 
-    private void sendMessage(String receiverId, String messageContent, String senderId) {
-        Message message = new Message(senderId, receiverId, messageContent);
+    private void sendMessage(String receiverId, String messageContent, String senderId, String senderName) {
+        Message message = new Message(senderId, receiverId, messageContent, senderName);
         message.setTimestamp(new java.util.Date());
         message.setStatus("sent");
 

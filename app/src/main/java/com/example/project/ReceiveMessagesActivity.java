@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.project.databinding.ActivityReceiveMessagesBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +48,11 @@ public class ReceiveMessagesActivity extends AppCompatActivity {
 
         db.collection("Messages")
                 .whereEqualTo("receiverId", professorId)
+                .orderBy("timestamp", Query.Direction.DESCENDING) // 시간순으로 정렬
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        messageList.clear(); // 중복 추가를 방지하기 위해 리스트를 먼저 클리어
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Message message = document.toObject(Message.class);
                             messageList.add(message);

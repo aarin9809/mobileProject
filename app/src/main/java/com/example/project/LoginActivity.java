@@ -22,7 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.project.databinding.ActivityLoginBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Random;
 
@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                 binding.loginButton.setVisibility(View.VISIBLE);
             } else {
                 binding.loginButton.setVisibility(View.GONE);
+                generateCaptcha(); // 새로운 캡차를 생성하여 사용자가 다시 입력하도록 유도
             }
         });
 
@@ -150,6 +151,9 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         // 학생 로그인 성공
+                        DocumentSnapshot studentDoc = task.getResult().getDocuments().get(0);
+                        String userName = studentDoc.getString("name");
+
                         Log.d(TAG, "Student login successful");
                         Toast.makeText(LoginActivity.this, "학생 로그인 성공", Toast.LENGTH_SHORT).show();
 
@@ -157,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("user_id", userId);
+                        editor.putString("user_name", userName);
                         editor.putString("user_type", "student");
                         editor.apply();
 
@@ -171,35 +176,26 @@ public class LoginActivity extends AppCompatActivity {
                                 .whereEqualTo("password", password)
                                 .get()
                                 .addOnCompleteListener(professorTask -> {
-                                    if (professorTask.isSuccessful()) {
-                                        boolean found = false;
-                                        for (QueryDocumentSnapshot document : professorTask.getResult()) {
-                                            Log.d(TAG, "Found document: " + document.getData()); // 추가 로그
-                                            found = true;
-                                            // 교수님 로그인 성공
-                                            Log.d(TAG, "Professor login successful");
-                                            Toast.makeText(LoginActivity.this, "교수님 로그인 성공", Toast.LENGTH_SHORT).show();
+                                    if (professorTask.isSuccessful() && !professorTask.getResult().isEmpty()) {
+                                        DocumentSnapshot professorDoc = professorTask.getResult().getDocuments().get(0);
+                                        String userName = professorDoc.getString("name");
 
-                                            // SharedPreferences에 교수님 ID 저장
-                                            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString("user_id", userId);
-                                            editor.putString("user_type", "professor");
-                                            editor.apply();
+                                        Log.d(TAG, "Professor login successful");
+                                        Toast.makeText(LoginActivity.this, "교수님 로그인 성공", Toast.LENGTH_SHORT).show();
 
-                                            Intent intent = new Intent(LoginActivity.this, ProfessorInfoActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                            break;
-                                        }
-                                        if (!found) {
-                                            Log.w(TAG, "Professor login failed: No matching document found");
-                                            Toast.makeText(LoginActivity.this, "로그인 실패: 유효하지 않은 교수님 ID 또는 비밀번호", Toast.LENGTH_SHORT).show();
-                                        }
+                                        // SharedPreferences에 교수님 ID 저장
+                                        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("user_id", userId);
+                                        editor.putString("user_name", userName);
+                                        editor.putString("user_type", "professor");
+                                        editor.apply();
+
+                                        Intent intent = new Intent(LoginActivity.this, ProfessorInfoActivity.class);
+                                        startActivity(intent);
+                                        finish();
                                     } else {
-                                        // 로그인 실패
-                                        Log.w(TAG, "Professor login failed", professorTask.getException());
-                                        Toast.makeText(LoginActivity.this, "로그인 실패: 유효하지 않은 교수님 ID 또는 비밀번호", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, "로그인 실패: 유효하지 않은 ID 또는 비밀번호", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }

@@ -33,7 +33,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         Message message = messageList.get(position);
         holder.messageContent.setText(message.getMessageContent());
-        holder.messageSender.setText(message.getSenderId());
+        holder.messageSender.setText(message.getSenderName());
         holder.messageTimestamp.setText(dateFormat.format(message.getTimestamp()));
     }
 

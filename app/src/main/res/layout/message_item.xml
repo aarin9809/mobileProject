@@ -8,18 +8,21 @@
         android:id="@+id/messageContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Message Content" />
+        android:text="Message Content"
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/messageSender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sender ID" />
+        android:text="Sender Name"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/messageTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Timestamp" />
+        android:text="Timestamp"
+        android:textSize="14sp" />
 
 </LinearLayout>

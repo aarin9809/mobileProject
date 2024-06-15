@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:hint="ID"
+            android:hint="학번/교번"
             app:boxBackgroundMode="outline"
             app:boxStrokeColor="@color/colorPrimary"
             app:boxCornerRadiusTopStart="16dp"
