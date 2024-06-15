@@ -4,15 +4,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder> {
-    private List<Message> messages;
 
-    public MessagesAdapter(List<Message> messages) {
-        this.messages = messages;
+    private List<Message> messageList;
+    private SimpleDateFormat dateFormat;
+
+    public MessagesAdapter(List<Message> messageList) {
+        this.messageList = messageList;
+        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
     }
 
     @NonNull
@@ -24,24 +31,30 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        Message message = messages.get(position);
-        holder.senderTextView.setText("보낸 사람: " + message.getSenderId());
-        holder.messageContentTextView.setText("메시지: " + message.getMessageContent());
+        Message message = messageList.get(position);
+        holder.messageContent.setText(message.getMessageContent());
+        holder.messageSender.setText(message.getSenderId());
+        holder.messageTimestamp.setText(dateFormat.format(message.getTimestamp()));
     }
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return messageList.size();
     }
 
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView senderTextView;
-        TextView messageContentTextView;
+    public void updateData(List<Message> newMessageList) {
+        this.messageList = newMessageList;
+        notifyDataSetChanged();
+    }
+
+    static class MessageViewHolder extends RecyclerView.ViewHolder {
+        TextView messageContent, messageSender, messageTimestamp;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            senderTextView = itemView.findViewById(R.id.senderTextView);
-            messageContentTextView = itemView.findViewById(R.id.messageContentTextView);
+            messageContent = itemView.findViewById(R.id.messageContent);
+            messageSender = itemView.findViewById(R.id.messageSender);
+            messageTimestamp = itemView.findViewById(R.id.messageTimestamp);
         }
     }
 }

@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,30 +21,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.project.databinding.ActivityLoginBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import android.content.SharedPreferences;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
     private ActivityLoginBinding binding;
     private FirebaseFirestore db;
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth != null ? mAuth.getCurrentUser() : null;
-        if (currentUser != null) {
-            currentUser.reload();
-        }
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -72,18 +64,18 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.loginButton.setOnClickListener(v -> {
-            String studentId = binding.studentIdEditText.getText().toString().trim();
+            String userId = binding.studentIdEditText.getText().toString().trim();
             String password = binding.passwordEditText.getText().toString().trim();
 
-            if (validateInputs(studentId, password)) {
-                performLogin(studentId, password);
+            if (validateInputs(userId, password)) {
+                performLogin(userId, password);
             }
         });
     }
 
-    private boolean validateInputs(String stu_id, String password) {
-        if (stu_id.isEmpty()) {
-            binding.studentIdEditText.setError("학번을 입력하세요");
+    private boolean validateInputs(String userId, String password) {
+        if (userId.isEmpty()) {
+            binding.studentIdEditText.setError("ID를 입력하세요");
             return false;
         }
 
@@ -95,32 +87,68 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private void performLogin(String studentId, String password) {
+    private void performLogin(String userId, String password) {
         db.collection("Students")
-                .whereEqualTo("stu_id", studentId)
+                .whereEqualTo("stu_id", userId)
                 .whereEqualTo("password", password)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        // 로그인 성공, 사용자 정보 업데이트
-                        Log.d(TAG, "Login successful");
-                        Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                        // 학생 로그인 성공
+                        Log.d(TAG, "Student login successful");
+                        Toast.makeText(LoginActivity.this, "학생 로그인 성공", Toast.LENGTH_SHORT).show();
 
                         // SharedPreferences에 사용자 ID 저장
-                        String userId = task.getResult().getDocuments().get(0).getId();
                         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("user_id", userId);
+                        editor.putString("user_type", "student");
                         editor.apply();
 
                         Intent intent = new Intent(LoginActivity.this, ProfessorInfoActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        // 로그인 실패
-                        Log.w(TAG, "Login failed", task.getException());
-                        Toast.makeText(LoginActivity.this, "로그인 실패: 유효하지 않은 학번 또는 비밀번호", Toast.LENGTH_SHORT).show();
+                        // 학생 로그인 실패 -> 교수님 로그인 시도
+                        Log.d(TAG, "Student login failed, trying professor login");
+                        db.collection("Professor")
+                                .whereEqualTo("id", userId)
+                                .whereEqualTo("password", password)
+                                .get()
+                                .addOnCompleteListener(professorTask -> {
+                                    if (professorTask.isSuccessful()) {
+                                        boolean found = false;
+                                        for (QueryDocumentSnapshot document : professorTask.getResult()) {
+                                            Log.d(TAG, "Found document: " + document.getData()); // 추가 로그
+                                            found = true;
+                                            // 교수님 로그인 성공
+                                            Log.d(TAG, "Professor login successful");
+                                            Toast.makeText(LoginActivity.this, "교수님 로그인 성공", Toast.LENGTH_SHORT).show();
+
+                                            // SharedPreferences에 교수님 ID 저장
+                                            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("user_id", userId);
+                                            editor.putString("user_type", "professor");
+                                            editor.apply();
+
+                                            Intent intent = new Intent(LoginActivity.this, ProfessorInfoActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                            break;
+                                        }
+                                        if (!found) {
+                                            Log.w(TAG, "Professor login failed: No matching document found");
+                                            Toast.makeText(LoginActivity.this, "로그인 실패: 유효하지 않은 교수님 ID 또는 비밀번호", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        // 로그인 실패
+                                        Log.w(TAG, "Professor login failed", professorTask.getException());
+                                        Toast.makeText(LoginActivity.this, "로그인 실패: 유효하지 않은 교수님 ID 또는 비밀번호", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     }
                 });
     }
+
 }

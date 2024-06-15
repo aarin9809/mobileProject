@@ -1,12 +1,13 @@
 package com.example.project;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.project.databinding.ActivityReceiveMessagesBinding;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.List;
 public class ReceiveMessagesActivity extends AppCompatActivity {
     private ActivityReceiveMessagesBinding binding;
     private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
     private MessagesAdapter adapter;
     private List<Message> messageList;
 
@@ -26,7 +26,6 @@ public class ReceiveMessagesActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
         messageList = new ArrayList<>();
 
         adapter = new MessagesAdapter(messageList);
@@ -37,9 +36,17 @@ public class ReceiveMessagesActivity extends AppCompatActivity {
     }
 
     private void loadMessages() {
-        String currentUserId = mAuth.getCurrentUser().getUid();
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        String professorId = sharedPreferences.getString("user_id", null);
+
+        if (professorId == null || professorId.isEmpty()) {
+            Toast.makeText(this, "교수님 ID가 유효하지 않습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         db.collection("Messages")
-                .whereEqualTo("receiverId", currentUserId)
+                .whereEqualTo("receiverId", professorId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

@@ -32,6 +32,10 @@
         <activity
             android:name=".SendMessageActivity"
             android:exported="true" />
+        <!-- ReceiveMessagesActivity -->
+        <activity
+            android:name=".ReceiveMessagesActivity"
+            android:exported="true" />
 
     </application>
 </manifest>

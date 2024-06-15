@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:hint="학번"
+            android:hint="ID"
             app:boxBackgroundMode="outline"
             app:boxStrokeColor="@color/colorPrimary"
             app:boxCornerRadiusTopStart="16dp"
@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
-                android:inputType="number" />
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- 비밀번호 입력 필드 -->

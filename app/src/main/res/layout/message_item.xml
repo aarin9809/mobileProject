@@ -1,20 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/senderTextView"
+        android:id="@+id/messageContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:text="Message Content" />
 
     <TextView
-        android:id="@+id/messageContentTextView"
+        android:id="@+id/messageSender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"/>
+        android:text="Sender ID" />
+
+    <TextView
+        android:id="@+id/messageTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timestamp" />
+
 </LinearLayout>
