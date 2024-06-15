@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:layout_marginBottom="8dp"
+    android:elevation="4dp"
+    android:backgroundTint="@android:color/white">
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/textColorPrimary"
+        android:text="홍길동"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium" />
+
+    <TextView
+        android:id="@+id/departmentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/textColorSecondary"
+        android:text="컴퓨터공학과"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:id="@+id/contactTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/textColorSecondary"
+        android:text="010-1234-5678"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:id="@+id/officeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/textColorSecondary"
+        android:text="5-201"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/textColorSecondary"
+        android:text="example@example.com"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif" />
+
+</LinearLayout>

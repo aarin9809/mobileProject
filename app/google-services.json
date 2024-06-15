@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "899004269997",
+    "project_id": "inha-3ec",
+    "storage_bucket": "inha-3ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899004269997:android:4b797136b776b794ed4d24",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZJvskRptZllRQfVGEMY_0X382Fq_Ra2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

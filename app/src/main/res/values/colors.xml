@@ -1,0 +1,9 @@
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#64B5F6</color>
+    <color name="backgroundLight">#FFFFFF</color>
+    <color name="backgroundColor">#FFFFFF</color> <!-- 추가된 배경 색상 -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+</resources>
